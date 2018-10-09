@@ -13,6 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.security.auth.login.LoginException;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: starting Asynctask.");
         DownloadData downloadData = new DownloadData();
-        downloadData.execute("URL GOES HERE");
+        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
         Log.d(TAG, "onCreate: Completed");
     }
 
@@ -70,11 +72,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 reader.close();
+
+                return xmlResult.toString();
             } catch (MalformedURLException e){
                 Log.e(TAG, "downloadXML: Invalid URL" + e.getMessage());
             } catch (IOException e){
                 Log.e(TAG, "downloadXML: IO Exception reading data " + e.getMessage());
+            } catch (SecurityException e) {
+                Log.e(TAG, "downloadXML: Security exception. Needs Permission? " + e.getMessage());
+//                e.printStackTrace();
             }
+
+            return null;
         }
     }
 }
